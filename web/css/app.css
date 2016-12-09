@@ -1,0 +1,77 @@
+#inputBody {
+    width: 100%;
+    resize: vertical;
+}
+
+#userNumber {
+    margin: 10px 0;
+}
+
+.message-item {
+    margin: 5px auto 10px;
+    width: calc(100% - 30px);
+}
+
+.message-item-head {
+    font-size: 14px;
+    padding: 0;
+}
+
+.message-item-head .author {
+    display: inline-block;
+    margin: 0;
+}
+
+.message-item-head .date {
+    font-size: 10px;
+    font-style: italic;
+    margin: 5px 0;
+    float: right;
+}
+
+.message-item-body {
+    font-size: 15px;
+    padding: 5px 10px;
+    position: relative;
+}
+
+.message-item-body.other {
+    background-color: #f0f0f0;
+    border-top-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.message-item-body.other::before {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    left: -15px;
+    border-top: 15px solid #f0f0f0;
+    border-left: 15px solid transparent;
+}
+
+.message-item-body.self {
+    background-color: #51a1f7;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    color: white;
+}
+
+.message-item-body.self::before {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 0;
+    right: -15px;
+    border-top: 15px solid #51a1f7;
+    border-right: 15px solid transparent;
+}
+
+#sb {
+    height: 70px;
+}

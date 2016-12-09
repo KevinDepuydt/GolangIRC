@@ -1,0 +1,19 @@
+{
+  "name": "go_chat_angular",
+  "version": "1.0.0",
+  "description": "Chat with angular and Go",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kévin Depuydt",
+  "private": true,
+  "license": "ISC",
+  "dependencies": {
+    "angular": "^1.5.9",
+    "angular-moment": "^1.0.1",
+    "angular-websocket": "^2.0.1",
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.1.1",
+    "moment": "^2.17.1"
+  }
+}
