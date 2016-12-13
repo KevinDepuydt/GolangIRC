@@ -80,9 +80,45 @@ img {
     height: 70px;
 }
 
+.message-area {
+    height: 150px;
+    width: 100%;
+    resize: vertical;
+    background-color: white;
+    border: 2px solid #51a1f7;
+    color: #313131;
+}
+
 .upload-drop-box {
     height: 150px;
-    border: 6px dashed gray;
+    border: 2px dashed #51a1f7;
     line-height: 150px;
     text-align: center;
+    background-color: white;
+    color: #51a1f7;
+}
+
+.message-type-button-list {
+    margin: 10px 0;
+}
+
+.message-type-button {
+    margin-right: 5px;
+    font-size: 14px;
+    background-color: #e2e2e2;
+    border: none;
+    padding: 5px 10px;
+    color: #8e8e8e;
+    border-radius: 3px;
+    outline: none;
+}
+
+.message-type-button.active {
+    background-color: #ffa93a;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+    color: white;
+}
+
+form .controls {
+    margin-bottom: 10px;
 }
