@@ -14,6 +14,7 @@
     <script src="node_modules/angular-moment/angular-moment.min.js"></script>
     <script src="node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
     <script src="node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js"></script> <!-- Support old browers -->
+    <script src="bower_components/angular-canvas-painter/dist/angular-canvas-painter.min.js"></script>
 
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -32,7 +33,8 @@
                 </div>
                 <div class="message-item-body" ng-class="{'self':message.author === app.nickname, 'other':message.author !== app.nickname}">
                     <p ng-bind="message.body" ng-if="message.messageType === 'chat_message'"></p>
-                    <img ng-src="uploads/{{message.body}}" ng-if="message.messageType === 'chat_image'" alt="Image" title="Image chat"/>
+                    <img ng-src="uploads/{{message.body}}" ng-if="message.messageType === 'chat_image'" alt="Image" title="Chat Image"/>
+                    <img ng-src="{{message.body}}" ng-if="message.messageType === 'chat_draw'" alt="Image" title="Chat draw"/>
                 </div>
             </div>
             <p id="userNumber">Il y a {{app.clientNumber}} {{app.clientNumber > 1 ? "utilisateurs connectés" : "utilisateur connecté"}} sur le chat</p>
@@ -45,6 +47,7 @@
                     <div class="message-type-button-list">
                         <button type="button" class="message-type-button" ng-class="{'active':app.form.messageType === 'chat_message'}" ng-click="app.setContentType('chat_message')">Message</button>
                         <button type="button" class="message-type-button" ng-class="{'active':app.form.messageType === 'chat_image'}" ng-click="app.setContentType('chat_image')">Image</button>
+                        <button type="button" class="message-type-button" ng-class="{'active':app.form.messageType === 'chat_draw'}" ng-click="app.setContentType('chat_draw')">Dessin</button>
                     </div>
                     <div class="controls" ng-show="app.form.messageType === 'chat_message'">
                         <textarea ng-model="app.form.body" title="message" class="message-area" required></textarea>
@@ -66,6 +69,10 @@
                         <div ng-show="app.uploadObj.success">
                             <img ng-src="uploads/{{app.uploadObj.filename}}" alt="dl preview" title="download preview"/>
                         </div>
+                    </div>
+                    <div class="controls" ng-show="app.form.messageType === 'chat_draw'">
+                        <div pw-canvas options="{undo: true, width: 400, height: 300, color: drawColors, customCanvasId: 'drawCanvas', opacity: 1}" version="app.canvasVersion"></div>
+                        <div pw-color-selector="['#2c3e50', '#3498db', '#e74c3c', '#2ecc71', '#f1c40f', '#8e44ad', '#ffffff']" color="drawColors"></div>
                     </div>
                 </div>
                 <div class="control-group">

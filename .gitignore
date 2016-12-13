@@ -33,3 +33,4 @@ vendor/
 .idea/
 web/node_modules/
 web/uploads/*
+web/bower_components/

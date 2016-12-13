@@ -11,7 +11,7 @@ const CONTENT_TYPE = {
 };
 
 // App
-angular.module('goChat', ['ngWebSocket', 'angularMoment', 'ngFileUpload'])
+angular.module('goChat', ['ngWebSocket', 'angularMoment', 'ngFileUpload', 'pw.canvas-painter'])
   .controller('goChatController', ['$websocket', '$location', '$anchorScroll', 'amMoment', 'Upload',
     function($websocket, $location, $anchorScroll, amMoment, Upload) {
       // modules config
@@ -27,25 +27,26 @@ angular.module('goChat', ['ngWebSocket', 'angularMoment', 'ngFileUpload'])
       gc.clientNumber = 0;
       gc.form = NewForm();
       gc.uploadObj = NewUploadObj();
+      gc.canvasVersion = 0;
 
       // Messages
       gc.sendMessage = function() {
+        if (gc.form.messageType === MSG_TYPE_DRAW) {
+          gc.form.body = document.getElementById('drawCanvas').toDataURL("image/png");
+        }
         if (gc.form.author.length > 0 && gc.form.author !== "Anonymous") {
           gc.nickname = gc.form.author;
           gc.nicknameIsChoosen = true;
         }
         var message = Object.assign({date: Date.now()}, gc.form);
-        console.log(message);
         ws.send(message);
         gc.form = NewForm();
         gc.uploadObj = NewUploadObj();
+        gc.canvasVersion = 0;
       };
 
       ws.onMessage(function(message) {
         var newMessage = JSON.parse(message.data);
-
-        console.log("New message ", newMessage);
-
         switch (newMessage.messageType) {
           case MSG_TYPE_MSG:
           case MSG_TYPE_IMG:
@@ -56,7 +57,6 @@ angular.module('goChat', ['ngWebSocket', 'angularMoment', 'ngFileUpload'])
           case MSG_TYPE_NOTIFICATION:
             switch (newMessage.notificationType) {
               case NOTIFICATION_CLIENT_NUMBER:
-                console.log("Client number has changed");
                 gc.clientNumber = newMessage.body;
                 break;
               default:
@@ -73,12 +73,10 @@ angular.module('goChat', ['ngWebSocket', 'angularMoment', 'ngFileUpload'])
           url: '/upload',
           data: {file: file}
         }).then(function (res) {
-          console.log('Success : file name return by server ' + res.data);
           gc.uploadObj.message = "Le fichier à bien été téléchargé";
           gc.uploadObj.filename = gc.form.body = res.data;
           gc.uploadObj.success = true;
         }, function (res) {
-          console.log('Error status: ' + res.status);
           gc.uploadObj.message = res.status;
           gc.uploadObj.success = false;
         }, function (evt) {
@@ -88,7 +86,11 @@ angular.module('goChat', ['ngWebSocket', 'angularMoment', 'ngFileUpload'])
       };
 
       gc.setContentType = function(type) {
-        gc.form.body = "";
+        if (type === MSG_TYPE_DRAW) {
+          gc.form.body = "nice draw";
+        } else {
+          gc.form.body = "";
+        }
         gc.uploadObj = NewUploadObj();
         gc.form.messageType = type;
       };

@@ -1,0 +1,22 @@
+{
+  "name": "go_chat_angular",
+  "description": "Chat with angular and Go",
+  "main": "",
+  "authors": [
+    "Benjamin Robert",
+    "Kévin Depuydt"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/KevinDepuydt/GolangIRC",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-canvas-painter": "^0.5.3"
+  }
+}
