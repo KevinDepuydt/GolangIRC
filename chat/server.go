@@ -3,6 +3,7 @@ package chat
 import (
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"golang.org/x/net/websocket"
@@ -10,14 +11,14 @@ import (
 
 // Chat server
 type Server struct {
-	pattern     string
-	messages    []*Message
-	clients     map[int]*Client
-	addCh       chan *Client
-	delCh       chan *Client
-	sendAllCh   chan *Message
-	doneCh      chan bool
-	errCh       chan error
+	pattern   string
+	messages  []*Message
+	clients   map[int]*Client
+	addCh     chan *Client
+	delCh     chan *Client
+	sendAllCh chan *Message
+	doneCh    chan bool
+	errCh     chan error
 }
 
 // Create new chat server
@@ -29,6 +30,17 @@ func NewServer(pattern string) *Server {
 	sendAllCh := make(chan *Message)
 	doneCh := make(chan bool)
 	errCh := make(chan error)
+	path := "web/uploads/"
+
+	removeErr := os.RemoveAll(path)
+	if removeErr != nil {
+		log.Fatal("Error: ", removeErr)
+	}
+	mkdirErr := os.MkdirAll(path, 0777)
+	if mkdirErr != nil {
+		log.Fatal("Error: ", mkdirErr)
+	}
+	log.Println("web/uploads deleted")
 
 	return &Server{
 		pattern,
