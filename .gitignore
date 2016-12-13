@@ -32,3 +32,4 @@ _testmain.go
 vendor/
 .idea/
 web/node_modules/
+web/uploads/*

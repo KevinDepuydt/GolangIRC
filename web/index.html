@@ -12,6 +12,8 @@
     <script src="node_modules/moment/min/moment.min.js"></script>
     <script src="node_modules/moment/locale/fr.js"></script>
     <script src="node_modules/angular-moment/angular-moment.min.js"></script>
+    <script src="node_modules/ng-file-upload/dist/ng-file-upload.min.js"></script>
+    <script src="node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js"></script> <!-- Support old browers -->
 
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -48,6 +50,18 @@
                     <button type="submit" class="btn btn-default" ng-disabled="!messageForm.$valid">Send</button>
                 </div>
             </form>
+
+            <p>Drop image</p>
+            <div ngf-drop="app.upload($file)" ng-model="file" class="upload-drop-box"
+                 ngf-drag-over-class="'dragover'" ngf-multiple="false"
+                 ngf-pattern="'image/*'">Drop Image to upload here</div>
+
+            <p>Or select</p>
+            <button class="btn btn-default" ngf-select="app.upload($file)">Select file</button>
+
+            <p>Download message / preview</p>
+            <p ng-bind="app.uploadMessage"></p>
+            <img ng-show="app.uploadSuccess" ng-src="uploads/{{app.uploadFileSrc}}" alt="dl preview" title="download preview"/>
         </div>
     </div>
     <div id="sb">
