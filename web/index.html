@@ -31,7 +31,8 @@
                     <span class="date" am-time-ago="message.date"></span>
                 </div>
                 <div class="message-item-body" ng-class="{'self':message.author === app.nickname, 'other':message.author !== app.nickname}">
-                    <p ng-bind="message.body"></p>
+                    <p ng-bind="message.body" ng-if="message.messageType === 'chat_message'"></p>
+                    <img ng-src="uploads/{{message.body}}" ng-if="message.messageType === 'chat_image'" alt="Image" title="Image chat"/>
                 </div>
             </div>
             <p id="userNumber">Il y a {{app.clientNumber}} {{app.clientNumber > 1 ? "utilisateurs connectés" : "utilisateur connecté"}} sur le chat</p>
@@ -41,27 +42,36 @@
                     <input id="inputAuthor" type="text" ng-model="app.form.author" ng-if="!app.nicknameIsChoosen" required/>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="inputBody">Message:</label>
-                    <div class="controls">
-                        <textarea id="inputBody" ng-model="app.form.body" required></textarea>
+                    <div class="message-type-button-list">
+                        <button type="button" class="message-type-button" ng-class="{'active':app.form.messageType === 'chat_message'}" ng-click="app.setContentType('chat_message')">Message</button>
+                        <button type="button" class="message-type-button" ng-class="{'active':app.form.messageType === 'chat_image'}" ng-click="app.setContentType('chat_image')">Image</button>
+                    </div>
+                    <div class="controls" ng-show="app.form.messageType === 'chat_message'">
+                        <textarea ng-model="app.form.body" title="message" class="message-area" required></textarea>
+                    </div>
+                    <div class="controls" ng-show="app.form.messageType === 'chat_image'">
+                        <p ng-bind="app.uploadObj.message"></p>
+                        <input type="hidden" ng-model="app.form.body" required />
+                        <div ng-hide="app.uploadObj.success">
+                            <div ngf-drop="app.upload($file)"
+                                 ngf-select="app.upload($file)"
+                                 ng-model="file"
+                                 class="upload-drop-box"
+                                 ngf-drag-over-class="'dragover'"
+                                 ngf-multiple="false"
+                                 ngf-pattern="'image/*'">
+                                click here to select image file or drop it
+                            </div>
+                        </div>
+                        <div ng-show="app.uploadObj.success">
+                            <img ng-src="uploads/{{app.uploadObj.filename}}" alt="dl preview" title="download preview"/>
+                        </div>
                     </div>
                 </div>
                 <div class="control-group">
                     <button type="submit" class="btn btn-default" ng-disabled="!messageForm.$valid">Send</button>
                 </div>
             </form>
-
-            <p>Drop image</p>
-            <div ngf-drop="app.upload($file)" ng-model="file" class="upload-drop-box"
-                 ngf-drag-over-class="'dragover'" ngf-multiple="false"
-                 ngf-pattern="'image/*'">Drop Image to upload here</div>
-
-            <p>Or select</p>
-            <button class="btn btn-default" ngf-select="app.upload($file)">Select file</button>
-
-            <p>Download message / preview</p>
-            <p ng-bind="app.uploadMessage"></p>
-            <img ng-show="app.uploadSuccess" ng-src="uploads/{{app.uploadFileSrc}}" alt="dl preview" title="download preview"/>
         </div>
     </div>
     <div id="sb">

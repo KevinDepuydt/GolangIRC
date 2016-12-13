@@ -1,7 +1,14 @@
 // Constant
 const MSG_TYPE_MSG = 'chat_message';
+const MSG_TYPE_IMG = 'chat_image';
+const MSG_TYPE_DRAW = 'chat_draw';
 const MSG_TYPE_NOTIFICATION = 'notification';
 const NOTIFICATION_CLIENT_NUMBER = 'client_number';
+const CONTENT_TYPE = {
+  message: MSG_TYPE_MSG,
+  image: MSG_TYPE_IMG,
+  draw: MSG_TYPE_DRAW
+};
 
 // App
 angular.module('goChat', ['ngWebSocket', 'angularMoment', 'ngFileUpload'])
@@ -18,10 +25,8 @@ angular.module('goChat', ['ngWebSocket', 'angularMoment', 'ngFileUpload'])
       gc.nickname = "";
       gc.messages = [];
       gc.clientNumber = 0;
-      gc.form = {
-        author: "Anonymous",
-        body: ""
-      };
+      gc.form = NewForm();
+      gc.uploadObj = NewUploadObj();
 
       // Messages
       gc.sendMessage = function() {
@@ -29,10 +34,11 @@ angular.module('goChat', ['ngWebSocket', 'angularMoment', 'ngFileUpload'])
           gc.nickname = gc.form.author;
           gc.nicknameIsChoosen = true;
         }
-        var message = Object.assign({ messageType: "chat_message", date: Date.now()}, gc.form);
+        var message = Object.assign({date: Date.now()}, gc.form);
         console.log(message);
         ws.send(message);
-        cleanForm();
+        gc.form = NewForm();
+        gc.uploadObj = NewUploadObj();
       };
 
       ws.onMessage(function(message) {
@@ -42,6 +48,8 @@ angular.module('goChat', ['ngWebSocket', 'angularMoment', 'ngFileUpload'])
 
         switch (newMessage.messageType) {
           case MSG_TYPE_MSG:
+          case MSG_TYPE_IMG:
+          case MSG_TYPE_DRAW:
             gc.messages.push(newMessage);
             gc.scrollBottom();
             break;
@@ -60,37 +68,46 @@ angular.module('goChat', ['ngWebSocket', 'angularMoment', 'ngFileUpload'])
         }
       });
 
-      // Uploads
-      gc.uploadMessage = "";
-      gc.uploadFileSrc = "";
-      gc.uploadSuccess = false;
-
       gc.upload = function (file) {
-        gc.uploadMessage = "";
-        gc.uploadFileSrc = "";
-        gc.uploadSuccess = false;
         Upload.upload({
           url: '/upload',
           data: {file: file}
         }).then(function (res) {
           console.log('Success : file name return by server ' + res.data);
-          gc.uploadMessage = "Le fichier à bien été téléchargé";
-          gc.uploadFileSrc = res.data;
-          gc.uploadSuccess = true;
+          gc.uploadObj.message = "Le fichier à bien été téléchargé";
+          gc.uploadObj.filename = gc.form.body = res.data;
+          gc.uploadObj.success = true;
         }, function (res) {
           console.log('Error status: ' + res.status);
+          gc.uploadObj.message = res.status;
+          gc.uploadObj.success = false;
         }, function (evt) {
           var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
           console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
         });
       };
 
+      gc.setContentType = function(type) {
+        gc.form.body = "";
+        gc.uploadObj = NewUploadObj();
+        gc.form.messageType = type;
+      };
+
       // Clean message form
-      function cleanForm() {
-        gc.form = {
+      function NewForm() {
+        return {
           author: gc.nicknameIsChoosen ? gc.nickname : "Anonymous",
-          body: ""
+          body: "",
+          messageType: CONTENT_TYPE.message
         };
+      }
+
+      function NewUploadObj() {
+        return {
+          message: "",
+          success: false,
+          filename: ""
+        }
       }
 
       // Auto scroll bottom on new message
